@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-storage-volume-claim
+  namespace : {{ .Release.Namespace }}
+  labels:
+    deployment: wso2am-mysql
+    product: api-manager
+spec:
+  storageClassName: managed-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

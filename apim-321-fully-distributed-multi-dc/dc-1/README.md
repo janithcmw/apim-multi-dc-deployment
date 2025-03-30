@@ -1,0 +1,1 @@
+This is a custom resource which is designed to run in AKS.

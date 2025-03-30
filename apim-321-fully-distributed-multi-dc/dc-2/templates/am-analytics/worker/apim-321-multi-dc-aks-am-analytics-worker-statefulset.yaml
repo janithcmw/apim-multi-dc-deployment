@@ -1,0 +1,170 @@
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-ana-worker-statefulset
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-analytics-worker
+  serviceName: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-analytics-worker-headless-service
+  template:
+    metadata:
+      annotations:
+        checksum.am.analytics.worker.conf: {{ include (print $.Template.BasePath "/am-analytics/worker/apim-321-multi-dc-aks-am-analytics-worker-conf.yaml") . | sha256sum }}
+      labels:
+        deployment: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-analytics-worker
+    spec:
+      {{- if .Values.wso2.deployment.hostAliases.ip }}
+      hostAliases:
+        - ip: {{ .Values.wso2.deployment.hostAliases.ip }}
+          hostnames:
+            - {{ .Values.wso2.deployment.am.devportal.ingress.hostname }}
+            - {{ .Values.wso2.deployment.am.gateway.ingress.hostname }}
+            - {{ .Values.wso2.deployment.am.km.ingress.hostname }}
+            - {{ .Values.wso2.deployment.am.publisher.ingress.hostname }}
+            - {{ .Values.wso2.deployment.am.tm.ingress.hostname }}
+            - {{ .Values.wso2.deployment.analytics.dashboard.ingress.hostname }}
+            - {{ .Values.wso2.deployment.analytics.worker.ingress.hostname }}
+        - ip: {{ .Values.wso2.deployment.remoteHostAliases.ip }}
+          hostnames:
+            {{- range .Values.wso2.deployment.remoteHostAliases.hostnames }}
+            - "{{ . }}"
+            {{- end }}
+      {{- end}}
+      initContainers:
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: init-mysql-db
+          image: busybox:1.32
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z "{{ template "apim-321-multi-dc-aks.resource.prefix" . }}-mysql-service" 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
+      {{ end }}
+        - name: init-permissions-logs
+          image: busybox
+#          command: [ "sh", "-c", "find /home/wso2carbon/wso2am-3.2.1/repository/logs -not -path '/home/wso2carbon/wso2am-3.2.1/repository/logs/.snapshot*' -exec chmod 777 {} +" ]
+          command: [ "sh", "-c", "echo 'Setting permissions on /home/wso2carbon/wso2am-analytics-3.2.0/wso2/worker/logs...';
+                      find /home/wso2carbon/wso2am-analytics-3.2.0/wso2/worker/logs -not -path '/home/wso2carbon/wso2am-analytics-3.2.0/wso2/worker/logs/.snapshot*' -exec chmod 777 {} +;
+                      if [ $? -eq 0 ]; then
+                        echo 'Permissions set successfully.';
+                      else
+                        echo 'Error setting permissions, please check the NFS server settings.';
+                      fi;"
+          ]
+          volumeMounts:
+            - name: wso2am-analytics-worker-log-storage-volume
+              mountPath: /home/wso2carbon/wso2am-analytics-3.2.0/wso2/worker/logs
+      containers:
+        - name: wso2am-analytics-worker
+          {{- if .Values.wso2.deployment.analytics.worker.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.analytics.worker.dockerRegistry }}/{{ .Values.wso2.deployment.analytics.worker.imageName }}
+          {{- $tag := .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.analytics.worker.imageName }}:{{ .Values.wso2.deployment.analytics.worker.imageTag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.analytics.worker.imagePullPolicy }}
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9444
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9444
+            initialDelaySeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.analytics.worker.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.analytics.worker.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.analytics.worker.resources.limits.cpu }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 7612
+              protocol: "TCP"
+            - containerPort: 7712
+              protocol: "TCP"
+            - containerPort: 7444
+              protocol: "TCP"
+          volumeMounts:
+            - name: wso2am-analytics-worker-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/conf/worker/deployment.yaml
+              subPath: deployment.yaml
+            - name: wso2am-analytics-worker-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/wso2/worker/bin/carbon.sh
+              subPath: carbon.sh
+            - name: wso2am-analytics-worker-log-storage-volume
+              mountPath: /home/wso2carbon/wso2am-analytics-3.2.0/wso2/worker/logs
+            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/lib
+            {{ end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{ if .Values.wso2.deployment.analytics.imagePullSecrets.enable }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.analytics.imagePullSecrets.secretName }}
+      {{ end }}
+      volumes:
+        - name: wso2am-analytics-worker-conf
+          configMap:
+            name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-analytics-worker-conf
+        - name: wso2am-analytics-worker-bin
+          configMap:
+            name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-analytics-worker-bin
+        - name: wso2am-analytics-worker-log-storage-volume
+          persistentVolumeClaim:
+            claimName: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-analytics-worker-log-storage-volume-claim
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: mysql-connector-jar
+          emptyDir: {}
+        {{ end }}

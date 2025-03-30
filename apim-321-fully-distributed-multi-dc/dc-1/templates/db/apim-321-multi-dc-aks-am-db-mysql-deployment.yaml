@@ -1,0 +1,70 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-mysql-deployment
+  namespace : {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: wso2am-mysql
+      product: api-manager
+  template:
+    metadata:
+      labels:
+        deployment: wso2am-mysql
+        product: api-manager
+    spec:
+      containers:
+        - name: wso2am-mysql
+          image: mysql:8.0
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: {{ .Values.wso2.deployment.database.mysql.username }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.wso2.deployment.database.mysql.password }}
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.database.mysql.memory }}
+              cpu: {{ .Values.wso2.deployment.database.mysql.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.database.mysql.memory }}
+              cpu: {{ .Values.wso2.deployment.database.mysql.cpu }}
+          volumeMounts:
+            - name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-scripts
+              mountPath: /docker-entrypoint-initdb.d
+            - name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-storage
+              mountPath: /var/lib/mysql
+          args: ["--max-connections", "10000"]
+      volumes:
+        - name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-scripts
+          configMap:
+            name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-scripts-cm
+        - name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-storage
+          persistentVolumeClaim:
+            claimName: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-db-mysql-storage-volume-claim
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+---

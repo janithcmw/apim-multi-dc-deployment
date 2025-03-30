@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-certificate-secret
+  namespace: {{ .Release.Namespace }}
+type: kubernetes.io/tls
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVkVENDQTEyZ0F3SUJBZ0lVRUJvR2xkK2xKa2FKNDZHbDByd0NlSEhVM3RNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2R6RUxNQWtHQTFVRUJoTUNVMHd4R2pBWUJnTlZCQWdNRVZOdmRYUm9aWEp1SUZCeWIzWnBibU5sTVE0dwpEQVlEVlFRSERBVkhZV3hzWlRFTk1Bc0dBMVVFQ2d3RWFtTnRkekVSTUE4R0ExVUVDd3dJYW1OdGR5NWpiMjB4CkdqQVlCZ05WQkFNTUVTb3VaR014TG1GdExuZHpiekl1WTI5dE1CNFhEVEkxTURNeU9ERTNNemd4TVZvWERUSTIKTURNeU9ERTNNemd4TVZvd2R6RUxNQWtHQTFVRUJoTUNVMHd4R2pBWUJnTlZCQWdNRVZOdmRYUm9aWEp1SUZCeQpiM1pwYm1ObE1RNHdEQVlEVlFRSERBVkhZV3hzWlRFTk1Bc0dBMVVFQ2d3RWFtTnRkekVSTUE4R0ExVUVDd3dJCmFtTnRkeTVqYjIweEdqQVlCZ05WQkFNTUVTb3VaR014TG1GdExuZHpiekl1WTI5dE1JSUJJakFOQmdrcWhraUcKOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTE2aWR1SXdDMmR0a0RCMnBxNDRhc0RsY2ovRFRoVFIzSHJHSgpTTm1kbDY5QXpGZUptMlFlMUpIeTF3RSt6NGZoeDFBTEZBNEtaVng2L1h0bXF3L0FONHJTaDZEYlhrMlJTdnBECnB4UHIzL2h4S2NvdXoxOEFNYUpaV2U1YURPTVJZcS9Ya0hhdmJQVUxNYXBtQi9ENnhDSmRzRlZxcVMwZ1VEcHEKeC83QitpT1ZYSzZmb0VBTWYzdGpwbTFxZ3NRUTQyYU1YY0ZaWW9tajVsU1hmWCt0OFhjTXVYWWJpQlQwVm5qVApjdWthaFdYVnp5UlloZ2Y4SHVHM2hzekt3R0hqd1ZYWTY5YUo4QytSK2YrU0hIdC9GdHZYaE00UXM5VEU2ejNxClk1NzNXLzFiQnNwS0liUWVJbkxjNXIvTzBsNzhMUDc2RWJIYW5YMy9tdlBrcjB3SCt3SURBUUFCbzRINE1JSDEKTUlIR0JnTlZIUkVFZ2I0d2didUNFU291WkdNeExtRnRMbmR6YnpJdVkyOXRnaGxoYm1Gc2VYUnBZM011WkdNeApMbUZ0TG5kemJ6SXVZMjl0Z2hsa1pYWndiM0owWVd3dVpHTXhMbUZ0TG5kemJ6SXVZMjl0Z2hkbllYUmxkMkY1CkxtUmpNUzVoYlM1M2MyOHlMbU52YllJWmNIVmliR2x6YUdWeUxtUmpNUzVoYlM1M2MyOHlMbU52YllJZmRISmgKWm1acFl5NXRZVzVoWjJWeUxtUmpNUzVoYlM1M2MyOHlMbU52YllJYmEyVjVMbTFoYm1GblpYSXVaR014TG1GdApMbmR6YnpJdVkyOXRNQXNHQTFVZER3UUVBd0lFOERBZEJnTlZIUTRFRmdRVVo5VnNqWk1lYXVvcURXSGlURXBpCnlvRHkvNWt3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUFpM0tQODR6YTN1UXJveVd3eklBT0NTVVpyaVEyYzMKSFg1US9oeGhKUnhvQUoyeGpUNXZuODluUkRxbzB0T3FDZmEvbHNqeXl3aGZXR0RvQlJTci9OYlVtUW1PcW1rNQpNYTB0YUpxRWZSaWc1Zi9vS1BRN3A3RjZnWFJqWFVBcE5PR3djQzlBTVdMc1VWZG9IM1A3VElhdG1icms3c1cyCkRMaWV5ZHNvTmlBREhCMnF2ZDkxR0xKdWlFUnFLanhmWWZITWNYSXJtZ0ZSTWs3SGtMWFZuVVJpNGt1ekdCbFgKV3ZVN1N6SU41NlRLWksyTkZBTmJ1anI2YnVCcm9xZURmWnJvOFMzRTd4WllSbUh2bFYvSmFuWDZ1YWRNQU1OMwpDNTh0aG92b3dWL2JrUWFjbUZnanNFbloxQjcrVldvTERSY3U1TnJxSXF5K2w3YlVIeHZzU0lRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRRFhxSjI0akFMWjIyUU0KSGFtcmpocXdPVnlQOE5PRk5IY2VzWWxJMloyWHIwRE1WNG1iWkI3VWtmTFhBVDdQaCtISFVBc1VEZ3BsWEhyOQplMmFyRDhBM2l0S0hvTnRlVFpGSytrT25FK3ZmK0hFcHlpN1BYd0F4b2xsWjdsb000eEZpcjllUWRxOXM5UXN4CnFtWUg4UHJFSWwyd1ZXcXBMU0JRT21ySC9zSDZJNVZjcnArZ1FBeC9lMk9tYldxQ3hCRGpab3hkd1ZsaWlhUG0KVkpkOWY2M3hkd3k1ZGh1SUZQUldlTk55NlJxRlpkWFBKRmlHQi93ZTRiZUd6TXJBWWVQQlZkanIxb253TDVINQovNUljZTM4VzI5ZUV6aEN6MU1UclBlcGpudmRiL1ZzR3lrb2h0QjRpY3R6bXY4N1NYdndzL3ZvUnNkcWRmZithCjgrU3ZUQWY3QWdNQkFBRUNnZ0VBQm15bktOZEFRbjNacGlRVmFOOUJNUElVZ3RQa0hvOW9qbDZGazNPcTBTNVAKQk55d0R4UUFJeDc4bC92RDJPb3RzZ0tvRnluYWxNTVkydHp4T3dsV0ZaRi9kMlkxclcwc0lJcXN0MFBOcVdJUwpUNXk1UzVqWWt2ZEkwczFaOEx1c1NlbitjYUdjMU9jYjMrMDVRRHFsT0hDTytwdDJJNklNMkxiL2RWa1pMWkFSCnhwMk5JaDRPaUlIQWR5Y3UxYU0wYlh3b3FCd3daUFFTcGdwM0ZERndEOXlNSFdtS2xxbEtsVyttU3NCY3pTS0kKWTFqVjBVQ29MM2QrVWFGSkMrMmw3TWFtVUt4Nk04WXVmdjdDVVJ0UGFVdTJUdGZlZng0VTRYNFdHbC9GUUcxTwp2RDYyajIwZGJVd2sxU0FCLy8rSDE0WjlVb3Bwa01GU01RK0UxQVUrcVFLQmdRRDdjSERCeXVzVUpEbDV0a2djCktkZnA3dWdlY21YVEVJd3drNU5BR1Faa0pVQS9zQXFYMFVWVC8wbnZxT2VmVWFtNmZ3RGQ4WFh4RDBMVnBhZEYKektSalphaUlFOCsxNWpIMVhlYXBqcTJadDRvUmpuMFR6NE5FLzF0bVo0bGR5aUorTjVacjdndU9vMEVKY3NzTAp1SGVIbzNxQUdLREw1ZHZuci9WRWJ2QTFoUUtCZ1FEYmtnZERsZytiWnZwSGg3cVNZWkpTcVJCUE0yaSs4cG5OCnlPSlRWQ1dDY3NBaXdSVi9EZkFHbkRZNWlUdEhWNm01YkFuNXJEM3ZQd3JwOHdnTy83WnduSGNFbmlQcEhnQ2kKeXd6a00yQjRQWTkwUGZtUis2Qmt2emdiSEpPSGN0WUlpR0ZEUi9BaFlwUUZqUnYrNytzUGJxNUlHUUl1eHYxZApEdXJNQlNyL2Z3S0JnQjd2TzRBc05mWFpheFRWWDFQUHRoZTY0K1h6RHlJRGxDdlp6REVEb3l5cEJKbVJVQXhUCm0rTDBzcVVBczlaL0ZwR3lWR241N2hmRlYrU3ZKOEJIcUNYdWVPaWMvMTRTdnl5LzY4UUtvTU1idUtubVRPOG0KQmJGMGRVdEpDN1oxU3Y4YVdiQlhyaVpUWVlvSERJSVpwT01VTXRzVnJKckpZZC9FWHptWEtJaDlBb0dCQUpRaApvcER3VGpzemNDcU40VXNjVkpFN3llc0U3ZWZVMS9yRFNoMlpxV3ltYWdXSWFpNDdndkdTdGVwL01PVGl1WGlFCjhQM21QQ3FLUjV5cC80Zk84SkJzbnNjWXdYVm1ibHRselo2dklxZzhMK25tWGRjbEFZSzJsdTJEaSt4WGh4cGUKbCsvQ09yanJQcDI0STJrTkIzSno0MVIwdXNwQUtYSjh1OTlFcFV1VkFvR0JBSzZWaDA4dit6QkRsL1RtNDVvMgpaeCtkUkxSSXJqMEU5NlZQa3JsY2ZMTm1GMm54RW1rS0U4UXVmTGRhRks5L21GNnZiVm9tcENyU3ppUDNmV3JwCm5maURHb0c3bUZQTlJ2Q2VCQ29mQmF0MlNrSHJsTGdQOG81UGpRcUNpdEJ3WFpUZCtGL2tpb1NCdVdaRXNwOEkKcGxuM1VqK0NLVDV4SmkwUjJwak1ROVFnCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+
+# For this, you can generate either keys with passwords or without passwords. Having password-protected keys is relevant
+# even if we are adding the content of the keys. If password-protected keys are generated need to push the unprotected
+# version of the privatekey as follows :
+#  1. Generate the key: openssl genpkey -algorithm RSA -out private.key -aes256 -pkeyopt rsa_keygen_bits:2048
+#  2. Generate the certificate: openssl req -x509 -days 365 -key private.key -out certificate.crt \
+#                               -subj "/C=SL/ST=Southern Province/L=Galle/O=jcmw/OU=jcmw.com/CN=*.am.wso2.com" \
+#                               -extensions v3_req -config <(echo "[req]"; \
+#                               echo distinguished_name=req; \
+#                               echo "[v3_req]"; \
+#                               echo "subjectAltName=DNS:*.am.wso2.com,DNS:analytics.am.wso2.com,DNS:devportal.am.wso2.com,DNS:gateway.am.wso2.com,DNS:publisher.am.wso2.com,DNS:traffic.manager.am.wso2.com,DNS:key.manager.am.wso2.com"; \
+#                               echo "keyUsage=digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment")
+#  3. Generate keystore if required: openssl pkcs12 -export -in certificate.crt -inkey private.key -out keystore.p12 -name wso2carbon
+#                                    keytool -importkeystore -srckeystore keystore.p12 -srcstoretype PKCS12 -destkeystore wso2carbon.jks -deststoretype JKS
+#                                    keytool -export -keystore wso2carbon.jks -alias wso2carbon -file wso2carbon.crt
+#                                    keytool -import -alias wso2carbon -file wso2carbon.crt -keystore client-truststore.jks
+#  4. Generate un protected version of the private key: openssl rsa -in private.key -out private-unlocked.key
+#
+# If there is no requirement to use password-protected keys:
+#  1. Generate the key and certificate: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt \
+#                                       -subj "/C=SL/ST=Southern Province/L=Galle/O=jcmw/OU=jcmw.com/CN=*.am.wso2.com" \
+#                                       -extensions v3_req -config <(echo "[req]"; \
+#                                       echo "distinguished_name=req"; \
+#                                       echo "[v3_req]"; \
+#                                       echo "keyUsage=digitalSignature,nonRepudiation,keyEncipherment,dataEncipherment"; \
+#                                       echo "extendedKeyUsage=serverAuth,clientAuth"; \
+#                                       echo "subjectAltName=DNS:*.am.wso2.com,DNS:analytics.am.wso2.com,DNS:devportal.am.wso2.com,DNS:gateway.am.wso2.com,DNS:publisher.am.wso2.com,DNS:traffic.manager.am.wso2.com,DNS:key.manager.am.wso2.com")
+#
+# Then, base64 encode the content and add it to tls.crt and tls.key:
+#  1.  cat certificate.crt | base64 -w 0
+#  2.  cat private.key | base64 -w 0

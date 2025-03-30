@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-km-log-storage-volume-claim
+  namespace : {{ .Release.Namespace }}
+spec:
+  storageClassName: {{ .Values.wso2.deployment.storageClassName}}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
