@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-tm-2-internal-service
+  name: {{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-tm-2-external-service
   namespace: {{ .Release.Namespace }}
 spec:
   # label keys and values that must match in order to receive traffic for this service
