@@ -80,8 +80,8 @@ data:
     event_duplicate_url = ["tcp://{{ template "apim-321-multi-dc-aks.resource.prefix" . }}-am-tm-2-internal-service:5672"]
     
     [custom_token_revocation.connection_factory]
-    TopicConnectionFactory_DC1_TM1="tcp://traffic.manager.dc1.am.wso2.com:5672"
-    TopicConnectionFactory_DC1_TM2="tcp://traffic.manager.dc1.am.wso2.com:5673"
+    TopicConnectionFactory_DC1_TM1="tcp://traffic.manager1.external.svc.dc1.am.wso2.com:5672"
+    TopicConnectionFactory_DC1_TM2="tcp://traffic.manager2.external.svc.dc1.am.wso2.com:5672"
   {{- end }}
   log4j2.properties: |-
     # list of all appenders

@@ -50,6 +50,18 @@ spec:
             {{- range .Values.wso2.deployment.remoteHostAliases.hostnames }}
             - "{{ . }}"
             {{- end }}
+        - ip: {{ .Values.wso2.deployment.trafficManagerExternalIP.dc1tm1.ip }}
+          hostnames:
+            - {{ .Values.wso2.deployment.trafficManagerExternalIP.dc1tm1.hostname }}
+        - ip: {{ .Values.wso2.deployment.trafficManagerExternalIP.dc1tm2.ip }}
+          hostnames:
+            - {{ .Values.wso2.deployment.trafficManagerExternalIP.dc1tm2.hostname }}
+        - ip: {{ .Values.wso2.deployment.trafficManagerExternalIP.dc2tm1.ip }}
+          hostnames:
+            - {{ .Values.wso2.deployment.trafficManagerExternalIP.dc2tm1.hostname }}
+        - ip: {{ .Values.wso2.deployment.trafficManagerExternalIP.dc2tm2.ip }}
+          hostnames:
+            - {{ .Values.wso2.deployment.trafficManagerExternalIP.dc2tm2.hostname }}
       {{- end}}
       initContainers:
       - name: init-apim-analytics

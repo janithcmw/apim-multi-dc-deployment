@@ -34,6 +34,19 @@ wso2:
         - traffic.manager.dc2.am.wso2.com
         - analytics.dc2.am.wso2.com
         - analytics.worker.dc2.am.wso2.com
+    trafficManagerExternalIP:
+      dc1tm1:
+        ip: 10.20.30.40
+        hostname: traffic.manager1.external.svc.dc1.am.wso2.com
+      dc1tm2:
+        ip: 10.20.30.41
+        hostname: traffic.manager2.external.svc.dc2.am.wso2.com
+      dc2tm1:
+        ip: 10.20.30.42
+        hostname: traffic.manager1.external.svc.dc1.am.wso2.com
+      dc2tm2:
+        ip: 10.20.30.43
+        hostname: traffic.manager2.external.svc.dc2.am.wso2.com
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true

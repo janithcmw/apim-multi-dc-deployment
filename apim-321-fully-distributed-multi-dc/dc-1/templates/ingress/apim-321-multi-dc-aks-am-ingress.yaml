@@ -359,38 +359,38 @@ spec:
       port: 443
       protocol: TCP
       targetPort: https
-    - appProtocol: tcp
-      name: jms-tcp-tm1
-      port: 5672
-      protocol: TCP
-    - appProtocol: tcp
-      name: jms-tcp-tm2
-      port: 5673
-      protocol: TCP
-    - appProtocol: tcp
-      name: secure-jms-tcp-tm1
-      port: 8672
-      protocol: TCP
-    - appProtocol: tcp
-      name: secure-jms-tcp-tm2
-      port: 8673
-      protocol: TCP
-    - appProtocol: tcp
-      name: binary-tm1
-      port: 9611
-      protocol: TCP
-    - appProtocol: tcp
-      name: binary-tm2
-      port: 9612
-      protocol: TCP
-    - appProtocol: tcp
-      name: binary-secure-tm1
-      port: 9711
-      protocol: TCP
-    - appProtocol: tcp
-      name: binary-secure-tm2
-      port: 9712
-      protocol: TCP
+#    - appProtocol: tcp  # commented to use direct LB type service for each TM svc
+#      name: jms-tcp-tm1
+#      port: 5672
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: jms-tcp-tm2
+#      port: 5673
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: secure-jms-tcp-tm1
+#      port: 8672
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: secure-jms-tcp-tm2
+#      port: 8673
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: binary-tm1
+#      port: 9611
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: binary-tm2
+#      port: 9612
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: binary-secure-tm1
+#      port: 9711
+#      protocol: TCP
+#    - appProtocol: tcp
+#      name: binary-secure-tm2
+#      port: 9712
+#      protocol: TCP
   selector:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
@@ -458,7 +458,7 @@ spec:
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
             - --default-ssl-certificate={{ .Release.Namespace }}/{{ template "apim-321-multi-dc-aks.resource.prefix" . }}-certificate-secret
-            - --tcp-services-configmap=ingress-nginx/tm-tcp-services # added to support TCP connections.
+#            - --tcp-services-configmap=ingress-nginx/tm-tcp-services # added to support TCP connections. # commented to use direct LB type service for each TM svc
           env:
             - name: POD_NAME
               valueFrom:
@@ -677,17 +677,17 @@ webhooks:
     sideEffects: None
 ---
 # handling TCP connections
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: tm-tcp-services
-  namespace: ingress-nginx
-data:
-  "5672": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:5672"
-  "5673": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:5672"
-  "8672": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:8672"
-  "8673": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:8672"
-  "9611": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:9611"
-  "9612": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:9611"
-  "9711": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:9711"
-  "9712": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:9711"
+#apiVersion: v1 # commented to use direct LB type service for each TM svc
+#kind: ConfigMap
+#metadata:
+#  name: tm-tcp-services
+#  namespace: ingress-nginx
+#data:
+#  "5672": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:5672"
+#  "5673": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:5672"
+#  "8672": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:8672"
+#  "8673": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:8672"
+#  "9611": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:9611"
+#  "9612": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:9611"
+#  "9711": "default/apim-321-multi-dc-aks-am-tm-1-internal-service:9711"
+#  "9712": "default/apim-321-multi-dc-aks-am-tm-2-internal-service:9711"
